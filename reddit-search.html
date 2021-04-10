@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Reddit Search - Ambratolm Web Tools</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="stylesheet" href="assets/buefy.min.css" />
+    <link rel="stylesheet" href="assets/bulmaswatch.min.css" />
+    <script src="assets/fontawesome.all.min.js"></script>
+    <script src="assets/vue.min.js"></script>
+    <script src="assets/buefy.min.js"></script>
+  </head>
+
+  <body class="container">
+    <section id="app" class="section">
+      <div class="card">
+        <header class="card-header">
+          <h1 class="card-header-title">
+            <b-icon icon="reddit" pack="fab"></b-icon>
+            <span>Reddit Search</span>
+          </h1>
+        </header>
+
+        <div class="card-content">
+          <form class="card-content" @keydown.enter="search">
+            <b-field label="Keyword" label-position="on-border">
+              <b-input
+                v-model="keyword"
+                ref="keyword"
+                type="search"
+                size="is-large"
+                icon="tag"
+                icon-pack="fas"
+              />
+            </b-field>
+
+            <b-field label="Author" label-position="on-border">
+              <b-input
+                @paste.native="extractAuthor"
+                v-model="author"
+                type="search"
+                size="is-large"
+                icon="user"
+                icon-pack="fas"
+              />
+            </b-field>
+
+            <b-field label="Subreddit" label-position="on-border">
+              <b-input
+                @paste.native="extractSubreddit"
+                v-model="subreddit"
+                type="search"
+                size="is-large"
+                icon="reddit-alien"
+                icon-pack="fab"
+                expanded
+              />
+            </b-field>
+
+            <b-field>
+              <b-button
+                @click="search"
+                type="is-primary"
+                size="is-large"
+                icon-left="search"
+                icon-pack="fas"
+                style="white-space: unset; height: auto"
+                expanded
+              >
+                <span>Search posts</span>
+                <span v-if="keyword">about <b>{{ keyword }}</b></span>
+                <span v-if="author">by <b>{{ author }}</b></span>
+                <span v-if="subreddit">in <b>{{ subreddit }}</b></span>
+              </b-button>
+            </b-field>
+
+            <hr />
+
+            <b-field label="Generated Link" label-position="on-border">
+              <b-input
+                @focus="$event.target.select()"
+                :value="resultUrl"
+                type="text"
+                size="is-large"
+                icon="link"
+                icon-pack="fas"
+                custom-class="has-background-light"
+                readonly
+              />
+            </b-field>
+          </form>
+        </div>
+
+        <footer class="card-footer">
+          <div class="card-footer-item">
+            <p class="has-text-grey-light">&copy; Ambratolm 2021</p>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </body>
+
+  <script>
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          keyword: "",
+          author: "",
+          subreddit: ""
+        };
+      },
+      mounted() {
+        this.$refs.keyword.focus();
+        this.load();
+      },
+      computed: {
+        resultUrl() {
+          const baseUrl =
+            this.subreddit.trim() !== ""
+              ? `https://www.reddit.com/r/${this.subreddit}`
+              : "https://www.reddit.com";
+
+          let query = `/search?q=${this.keyword}`;
+          query += this.author.trim() !== "" ? `+author:${this.author}` : "";
+          query += "&restrict_sr=1";
+          query += "&sort=new";
+          return baseUrl + query;
+        }
+      },
+      methods: {
+        search() {
+          window.open(this.resultUrl, "_blank");
+        },
+        load() {
+          this.keyword =
+              localStorage.keyword !== undefined
+              ? localStorage.keyword
+              : "rise";
+          this.author =
+            localStorage.author !== undefined
+              ? localStorage.author
+              : "ambratolm";
+          this.subreddit =
+            localStorage.subreddit !== undefined
+              ? localStorage.subreddit
+              : "art";
+        },
+        save() {
+          localStorage.keyword = this.keyword;
+          localStorage.author = this.author;
+          localStorage.subreddit = this.subreddit;
+        },
+        extractNameFromUrl(url) {
+          let urlParts = url.match(/[^\/]+/g);
+          if (urlParts.length > 0) {
+            return urlParts[urlParts.length - 1];
+          }
+          return url;
+        },
+        extractAuthor(e) {
+          e.preventDefault();
+          this.author = this.extractNameFromUrl(
+            e.clipboardData.getData("text")
+          );
+        },
+        extractSubreddit(e) {
+          e.preventDefault();
+          this.subreddit = this.extractNameFromUrl(
+            e.clipboardData.getData("text")
+          );
+        }
+      },
+      watch: {
+        keyword(keyword) {
+          localStorage.keyword = keyword;
+        },
+        author(author) {
+          localStorage.author = author;
+        },
+        subreddit(subreddit) {
+          localStorage.subreddit = subreddit;
+        }
+      }
+    });
+  </script>
+</html>

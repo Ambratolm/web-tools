@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ambratolm Web Tools</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="stylesheet" href="assets/buefy.min.css" />
+    <link rel="stylesheet" href="assets/bulmaswatch.min.css" />
+    <script src="assets/fontawesome.all.min.js"></script>
+    <script src="assets/vue.min.js"></script>
+    <script src="assets/buefy.min.js"></script>
+  </head>
+
+  <body class="container">
+    <section id="app" class="section">
+      <div class="card">
+        <header class="card-header">
+          <h1 class="card-header-title">
+            <b-icon icon="reddit" pack="fab"></b-icon>
+            <span>Ambratolm Web Tools</span>
+          </h1>
+        </header>
+
+        <div class="card-content">
+          <b-menu>
+            <b-menu-list>
+              <b-menu-item
+                v-for="webTool in webTools"
+                :label="webTool.title"
+                :icon="webTool.icon"
+                :icon-pack="webTool.iconPack"
+                :href="webTool.url"
+                target="_blank"
+                tag="a"
+              >
+              </b-menu-item>
+            </b-menu-list>
+          </b-menu>
+        </div>
+
+        <footer class="card-footer">
+          <div class="card-footer-item">
+            <p class="has-text-grey-light">&copy; Ambratolm 2021</p>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </body>
+
+  <script>
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          webTools: [
+            {
+              name: "reddit-search",
+              title: "Reddit Search",
+              url: "./reddit-search.html",
+              icon: "reddit",
+              iconPack: "fab"
+            },
+            {
+              name: "moroccan-currencies",
+              title: "Moroccan Currencies",
+              url: "./moroccan-currencies.html",
+              icon: "money-bill-wave",
+              iconPack: "fas"
+            },
+          ]
+        };
+      }
+    });
+  </script>
+</html>

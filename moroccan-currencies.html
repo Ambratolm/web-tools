@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Moroccan Currencies - Ambratolm Web Tools</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="stylesheet" href="assets/buefy.min.css" />
+    <link rel="stylesheet" href="assets/bulmaswatch.min.css" />
+    <script src="assets/written-number.min.js"></script>
+    <script src="assets/fontawesome.all.min.js"></script>
+    <script src="assets/vue.min.js"></script>
+    <script src="assets/buefy.min.js"></script>
+    <script src="assets/currency.min.js"></script>
+  </head>
+
+  <body class="container">
+    <section id="app" class="section">
+      <div class="card">
+        <header class="card-header">
+          <h1 class="card-header-title">
+            <b-icon icon="money-bill-wave" pack="fas"></b-icon>
+            <span>Moroccan Currencies</span>
+          </h1>
+        </header>
+
+        <div class="card-content">
+          <form class="card-content">
+            <b-field
+              label="Dirham"
+              label-position="on-border"
+              grouped
+              group-multiline
+            >
+              <b-input
+                @input.native="handleInput"
+                v-model="dirham"
+                icon="money-bill"
+                icon-pack="fas"
+                size="is-large"
+                expanded
+              ></b-input>
+              <p class="control is-expanded">
+                <b-button
+                  :label="dirhamFormatted"
+                  size="is-large"
+                  icon-left="money-bill"
+                  icon-pack="fas"
+                  expanded
+                />
+              </p>
+            </b-field>
+
+            <b-field
+              label="Cent"
+              label-position="on-border"
+              grouped
+              group-multiline
+            >
+              <b-input
+                @input.native="handleInput"
+                v-model="cent"
+                icon="coins"
+                icon-pack="fas"
+                size="is-large"
+                expanded
+              ></b-input>
+              <p class="control is-expanded">
+                <b-button
+                  :label="centFormatted"
+                  size="is-large"
+                  icon-left="coins"
+                  icon-pack="fas"
+                  expanded
+                />
+              </p>
+            </b-field>
+
+            <b-field
+              label="Rial"
+              label-position="on-border"
+              grouped
+              group-multiline
+            >
+              <b-input
+                @input.native="handleInput"
+                v-model="rial"
+                icon="coins"
+                icon-pack="fas"
+                size="is-large"
+                expanded
+              ></b-input>
+              <p class="control is-expanded">
+                <b-button
+                  :label="rialFormatted"
+                  size="is-large"
+                  icon-left="coins"
+                  icon-pack="fas"
+                  expanded
+                ></b-button>
+              </p>
+            </b-field>
+
+            <b-field
+              label="Franc"
+              label-position="on-border"
+              grouped
+              group-multiline
+            >
+              <b-input
+                @input.native="handleInput"
+                v-model="franc"
+                icon="coins"
+                icon-pack="fas"
+                size="is-large"
+                expanded
+              ></b-input>
+              <p class="control is-expanded">
+                <b-button
+                  :label="francFormatted"
+                  size="is-large"
+                  icon-left="coins"
+                  icon-pack="fas"
+                  expanded
+                />
+              </p>
+            </b-field>
+          </form>
+        </div>
+
+        <footer class="card-footer">
+          <div class="card-footer-item">
+            <p class="has-text-grey-light">&copy; Ambratolm 2021</p>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </body>
+
+  <script>
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          dirham: 1,
+          cent: 0,
+          rial: 0,
+          franc: 0
+        };
+      },
+      computed: {
+        dirhamFormatted() {
+          return this.dirhamFor(this.dirham).format();
+        },
+        centFormatted() {
+          return this.centFor(this.cent).format();
+        },
+        rialFormatted() {
+          return this.rialFor(this.rial).format();
+        },
+        francFormatted() {
+          return this.francFor(this.franc).format();
+        }
+      },
+      methods: {
+        dirhamFor(value) {
+          return currency(value, {
+            symbol: "\u062f\u002e\u0645",
+            pattern: "# !",
+            separator: " "
+          });
+        },
+        centFor(value) {
+          return currency(value, {
+            symbol: "\u00a2",
+            pattern: "# !",
+            separator: " "
+          });
+        },
+        rialFor(value) {
+          return currency(value, {
+            symbol: "\ufdfc",
+            pattern: "# !",
+            separator: " "
+          });
+        },
+        francFor(value) {
+          return currency(value, {
+            symbol: "\u20a3",
+            pattern: "# !",
+            separator: " "
+          });
+        },
+        handleInput(e) {
+          if (new RegExp(/[^\d+(\.\d+)*]/).test(e.key)) {
+            e.preventDefault();
+          }
+        }
+      },
+      watch: {
+        dirham: {
+          handler(dirham) {
+            this.cent = this.centFor(100 * this.dirhamFor(dirham).value).value;
+            this.rial = this.rialFor(20 * this.dirhamFor(dirham).value).value;
+            this.franc = this.francFor(50 * this.dirhamFor(dirham).value).value;
+          },
+          immediate: true
+        },
+        cent(cent) {
+          this.dirham = this.dirhamFor(0.01 * this.centFor(cent).value).value; // 1/100 = 0.01
+        },
+        rial(rial) {
+          this.dirham = this.dirhamFor(0.05 * this.rialFor(rial).value).value; // 1/20 = 0.05;
+        },
+        franc(franc) {
+          this.dirham = this.dirhamFor(0.02 * this.francFor(franc).value).value; // 1/50 = 0.02
+        }
+      }
+    });
+  </script>
+</html>
