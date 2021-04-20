@@ -7,6 +7,7 @@
     <link rel="shortcut icon" href="favicon.ico" />
     <link rel="stylesheet" href="assets/buefy.min.css" />
     <link rel="stylesheet" href="assets/bulmaswatch.min.css" />
+    <link rel="stylesheet" href="assets/custom.css" />
     <script src="assets/written-number.min.js"></script>
     <script src="assets/fontawesome.all.min.js"></script>
     <script src="assets/vue.min.js"></script>
@@ -15,7 +16,7 @@
   </head>
 
   <body class="container">
-    <section id="app" class="section">
+    <section id="app" class="section" v-cloak>
       <div class="card">
         <header class="card-header">
           <h1 class="card-header-title">
@@ -25,107 +26,108 @@
         </header>
 
         <div class="card-content">
-          <form class="card-content">
-            <b-field
-              label="Dirham"
-              label-position="on-border"
-              grouped
-              group-multiline
-            >
-              <b-input
-                @input.native="handleInput"
-                v-model="dirham"
-                icon="money-bill"
-                icon-pack="fas"
-                size="is-large"
-                expanded
-              ></b-input>
-              <p class="control is-expanded">
-                <b-button
-                  :label="dirhamFormatted"
-                  size="is-large"
-                  icon-left="money-bill"
+          <div class="columns is-multiline is-centered">
+            <div class="column is-one-quarter" :dir="dir">
+              <b-field label="Dirham" label-position="on-border">
+                <b-input
+                  @input.native="handleInput"
+                  v-model="dirham"
+                  ref="dirham"
+                  icon="money-bill"
                   icon-pack="fas"
+                  size="is-large"
                   expanded
-                />
-              </p>
-            </b-field>
+                ></b-input>
+              </b-field>
+            </div>
+            <div class="column is-one-quarter" :dir="dir">
+              <b-field label="Cent" label-position="on-border">
+                <b-input
+                  @input.native="handleInput"
+                  v-model="cent"
+                  icon="coins"
+                  icon-pack="fas"
+                  size="is-large"
+                  expanded
+                ></b-input>
+              </b-field>
+            </div>
+            <div class="column is-one-quarter" :dir="dir">
+              <b-field label="Rial" label-position="on-border">
+                <b-input
+                  @input.native="handleInput"
+                  v-model="rial"
+                  icon="coins"
+                  icon-pack="fas"
+                  size="is-large"
+                  expanded
+                ></b-input>
+              </b-field>
+            </div>
+            <div class="column is-one-quarter" :dir="dir">
+              <b-field label="Franc" label-position="on-border">
+                <b-input
+                  @input.native="handleInput"
+                  v-model="franc"
+                  icon="coins"
+                  icon-pack="fas"
+                  size="is-large"
+                  expanded
+                ></b-input>
+              </b-field>
+            </div>
 
-            <b-field
-              label="Cent"
-              label-position="on-border"
-              grouped
-              group-multiline
-            >
-              <b-input
-                @input.native="handleInput"
-                v-model="cent"
-                icon="coins"
-                icon-pack="fas"
-                size="is-large"
-                expanded
-              ></b-input>
-              <p class="control is-expanded">
-                <b-button
-                  :label="centFormatted"
-                  size="is-large"
-                  icon-left="coins"
-                  icon-pack="fas"
-                  expanded
-                />
+            <div class="column is-one-quarter" :dir="dir">
+              <p class="heading is-capitalized">Dirham</p>
+              <p class="title">{{ dirhamFormatted }}</p>
+              <p class="subtitle is-capitalized">
+                {{ wordsFor(dirham, lang, "dirham") }}
               </p>
-            </b-field>
+            </div>
+            <div class="column is-one-quarter" :dir="dir">
+              <p class="heading is-capitalized">Cent</p>
+              <p class="title">{{ centFormatted }}</p>
+              <p class="subtitle is-capitalized">
+                {{ wordsFor(cent, lang, "cent") }}
+              </p>
+            </div>
+            <div class="column is-one-quarter" :dir="dir">
+              <p class="heading is-capitalized">Rial</p>
+              <p class="title">{{ rialFormatted }}</p>
+              <p class="subtitle is-capitalized">
+                {{ wordsFor(rial, lang, "rial") }}
+              </p>
+            </div>
+            <div class="column is-one-quarter" :dir="dir">
+              <p class="heading is-capitalized">Franc</p>
+              <p class="title">{{ francFormatted }}</p>
+              <p class="subtitle is-capitalized">
+                {{ wordsFor(franc, lang, "franc") }}
+              </p>
+            </div>
 
-            <b-field
-              label="Rial"
-              label-position="on-border"
-              grouped
-              group-multiline
-            >
-              <b-input
-                @input.native="handleInput"
-                v-model="rial"
-                icon="coins"
-                icon-pack="fas"
-                size="is-large"
-                expanded
-              ></b-input>
-              <p class="control is-expanded">
-                <b-button
-                  :label="rialFormatted"
-                  size="is-large"
-                  icon-left="coins"
-                  icon-pack="fas"
-                  expanded
-                ></b-button>
-              </p>
-            </b-field>
+            <div class="column is-full is-paddingless is-marginless">
+              <hr />
+            </div>
 
-            <b-field
-              label="Franc"
-              label-position="on-border"
-              grouped
-              group-multiline
-            >
-              <b-input
-                @input.native="handleInput"
-                v-model="franc"
-                icon="coins"
-                icon-pack="fas"
-                size="is-large"
-                expanded
-              ></b-input>
-              <p class="control is-expanded">
-                <b-button
-                  :label="francFormatted"
-                  size="is-large"
-                  icon-left="coins"
-                  icon-pack="fas"
-                  expanded
-                />
-              </p>
-            </b-field>
-          </form>
+            <div class="column is-full">
+              <b-field position="is-right" grouped group-multiline>
+                <b-field label="Letters" label-position="on-border">
+                  <b-select v-model="lang" icon="globe-africa" icon-pack="fas">
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                    <option value="ar">العربية</option>
+                  </b-select>
+                </b-field>
+                <b-field label="Numerals" label-position="on-border">
+                  <b-select v-model="digit" icon="globe-africa" icon-pack="fas">
+                    <option value="west">Western Arabic</option>
+                    <option value="east">Eastern Arabic</option>
+                  </b-select>
+                </b-field>
+              </b-field>
+            </div>
+          </div>
         </div>
 
         <footer class="card-footer">
@@ -145,66 +147,110 @@
           dirham: 1,
           cent: 0,
           rial: 0,
-          franc: 0
+          franc: 0,
+          lang: "en",
+          digit: "west",
+          format: {
+            pattern: "# !",
+            separator: " "
+          }
         };
+      },
+      mounted() {
+        this.$refs.dirham.focus();
+        this.load();
       },
       computed: {
         dirhamFormatted() {
-          return this.dirhamFor(this.dirham).format();
+          const text = this.dirhamFor(this.dirham, this.lang).format();
+          return this.digit === "east" ? this.arabicHinduDigitsFor(text) : text;
         },
         centFormatted() {
-          return this.centFor(this.cent).format();
+          const text = this.centFor(this.cent, this.lang).format();
+          return this.digit === "east" ? this.arabicHinduDigitsFor(text) : text;
         },
         rialFormatted() {
-          return this.rialFor(this.rial).format();
+          const text = this.rialFor(this.rial, this.lang).format();
+          return this.digit === "east" ? this.arabicHinduDigitsFor(text) : text;
         },
         francFormatted() {
-          return this.francFor(this.franc).format();
+          const text = this.francFor(this.franc, this.lang).format();
+          return this.digit === "east" ? this.arabicHinduDigitsFor(text) : text;
+        },
+        dir() {
+          return this.lang === "ar" ? "rtl" : "ltr";
         }
       },
       methods: {
-        dirhamFor(value) {
-          return currency(value, {
-            symbol: "\u062f\u002e\u0645",
-            pattern: "# !",
-            separator: " "
-          });
+        dirhamFor(value, lang = "en") {
+          let symbol = "DH";
+          if (lang === "ar") symbol = "د.م";
+          return currency(value, { symbol, ...this.format });
         },
-        centFor(value) {
-          return currency(value, {
-            symbol: "\u00a2",
-            pattern: "# !",
-            separator: " "
-          });
+        centFor(value, lang = "en") {
+          let symbol = "¢";
+          if (lang === "ar") symbol = "ﺱ";
+          return currency(value, { symbol, ...this.format });
         },
-        rialFor(value) {
-          return currency(value, {
-            symbol: "\ufdfc",
-            pattern: "# !",
-            separator: " "
-          });
+        rialFor(value, lang = "en") {
+          let symbol = "r";
+          if (lang === "ar") symbol = "﷼";
+          return currency(value, { symbol, ...this.format });
         },
-        francFor(value) {
-          return currency(value, {
-            symbol: "\u20a3",
-            pattern: "# !",
-            separator: " "
-          });
+        francFor(value, lang = "en") {
+          let symbol = "₣";
+          if (lang === "ar") symbol = "ﻑ";
+          return currency(value, { symbol, ...this.format });
+        },
+        wordsFor(value, lang = "en", currency) {
+          let suffix = "";
+          switch (currency) {
+            case "dirham":
+              suffix = "dirham";
+              if (lang === "ar") suffix = "درهم";
+              break;
+            case "cent":
+              suffix = "cent";
+              if (lang === "fr") suffix = "centime";
+              if (lang === "ar") suffix = "سنتيم";
+              break;
+            case "rial":
+              suffix = "rial";
+              if (lang === "ar") suffix = "ريال";
+              break;
+            case "franc":
+              suffix = "franc";
+              if (lang === "ar") suffix = "فرنك";
+              break;
+          }
+          return `${writtenNumber(value, { lang })} ${suffix}`;
+        },
+        arabicHinduDigitsFor(value) {
+          return value.replace(/\d/g, i =>  '٠١٢٣٤٥٦٧٨٩'[i])
+        },
+        format(currency, options) {
+          return `${currency.dollars()}.${currency.cents()}`;
         },
         handleInput(e) {
           if (new RegExp(/[^\d+(\.\d+)*]/).test(e.key)) {
             e.preventDefault();
           }
+        },
+        load() {
+          this.dirham =
+            localStorage.dirham !== undefined ? localStorage.dirham : 1;
+          this.lang =
+            localStorage.lang !== undefined ? localStorage.lang : "en";
+          this.digit =
+          localStorage.digit !== undefined ? localStorage.digit : "west";
         }
       },
       watch: {
-        dirham: {
-          handler(dirham) {
-            this.cent = this.centFor(100 * this.dirhamFor(dirham).value).value;
-            this.rial = this.rialFor(20 * this.dirhamFor(dirham).value).value;
-            this.franc = this.francFor(50 * this.dirhamFor(dirham).value).value;
-          },
-          immediate: true
+        dirham(dirham) {
+          localStorage.dirham = dirham;
+          this.cent = this.centFor(100 * this.dirhamFor(dirham).value).value;
+          this.rial = this.rialFor(20 * this.dirhamFor(dirham).value).value;
+          this.franc = this.francFor(50 * this.dirhamFor(dirham).value).value;
         },
         cent(cent) {
           this.dirham = this.dirhamFor(0.01 * this.centFor(cent).value).value; // 1/100 = 0.01
@@ -214,6 +260,12 @@
         },
         franc(franc) {
           this.dirham = this.dirhamFor(0.02 * this.francFor(franc).value).value; // 1/50 = 0.02
+        },
+        lang(lang) {
+          localStorage.lang = lang;
+        },
+        digit(digit) {
+          localStorage.digit = digit;
         }
       }
     });

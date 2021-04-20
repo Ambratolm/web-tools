@@ -7,13 +7,14 @@
     <link rel="shortcut icon" href="favicon.ico" />
     <link rel="stylesheet" href="assets/buefy.min.css" />
     <link rel="stylesheet" href="assets/bulmaswatch.min.css" />
+    <link rel="stylesheet" href="assets/custom.css" />
     <script src="assets/fontawesome.all.min.js"></script>
     <script src="assets/vue.min.js"></script>
     <script src="assets/buefy.min.js"></script>
   </head>
 
   <body class="container">
-    <section id="app" class="section">
+    <section id="app" class="section" v-cloak>
       <div class="card">
         <header class="card-header">
           <h1 class="card-header-title">
@@ -23,7 +24,29 @@
         </header>
 
         <div class="card-content">
-          <b-menu>
+          <div class="columns is-multiline is-centered">
+            <div
+              v-for="webTool in webTools"
+              class="column is-one-quarter has-text-centered"
+            >
+              <a
+                :label="webTool.title"
+                :href="webTool.url"
+                target="_blank"
+                class="button is-multiline is-link is-outlined is-large is-expanded"
+                style="width: 7em; height: 7em;"
+              >
+                <b-icon
+                  :icon="webTool.icon"
+                  :pack="webTool.iconPack"
+                  size="is-large"
+                  class="is-marginless"
+                ></b-icon>
+                <span>{{ webTool.title }}</span>
+              </a>
+            </div>
+          </div>
+          <!-- <b-menu>
             <b-menu-list>
               <b-menu-item
                 v-for="webTool in webTools"
@@ -36,7 +59,7 @@
               >
               </b-menu-item>
             </b-menu-list>
-          </b-menu>
+          </b-menu> -->
         </div>
 
         <footer class="card-footer">
@@ -67,7 +90,7 @@
               url: "./moroccan-currencies.html",
               icon: "money-bill-wave",
               iconPack: "fas"
-            },
+            }
           ]
         };
       }

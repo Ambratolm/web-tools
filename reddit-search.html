@@ -7,13 +7,14 @@
     <link rel="shortcut icon" href="favicon.ico" />
     <link rel="stylesheet" href="assets/buefy.min.css" />
     <link rel="stylesheet" href="assets/bulmaswatch.min.css" />
+    <link rel="stylesheet" href="assets/custom.css" />
     <script src="assets/fontawesome.all.min.js"></script>
     <script src="assets/vue.min.js"></script>
     <script src="assets/buefy.min.js"></script>
   </head>
 
   <body class="container">
-    <section id="app" class="section">
+    <section id="app" class="section" v-cloak>
       <div class="card">
         <header class="card-header">
           <h1 class="card-header-title">
@@ -135,9 +136,7 @@
         },
         load() {
           this.keyword =
-              localStorage.keyword !== undefined
-              ? localStorage.keyword
-              : "rise";
+            localStorage.keyword !== undefined ? localStorage.keyword : "rise";
           this.author =
             localStorage.author !== undefined
               ? localStorage.author

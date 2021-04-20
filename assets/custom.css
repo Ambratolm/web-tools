@@ -1,0 +1,15 @@
+[v-cloak] {
+  display: none;
+}
+
+.button.is-multiline {
+  width: auto;
+  height: auto;
+  min-height: 2.25em;
+  white-space: unset;
+  flex-direction: column;
+}
+
+.button.is-multiline .icon {
+  margin: 0! important;
+}
