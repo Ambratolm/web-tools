@@ -24,7 +24,7 @@
         </header>
 
         <div class="card-content">
-          <form class="card-content" @keydown.enter="search">
+          <form @keydown.enter="search">
             <b-field label="Keyword" label-position="on-border">
               <b-input
                 v-model="keyword"

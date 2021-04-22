@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Reddit Search - Ambratolm Web Tools</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="stylesheet" href="assets/buefy.min.css" />
+    <link rel="stylesheet" href="assets/bulmaswatch.min.css" />
+    <link rel="stylesheet" href="assets/custom.css" />
+    <script src="assets/fontawesome.all.min.js"></script>
+    <script src="assets/vue.min.js"></script>
+    <script src="assets/buefy.min.js"></script>
+    <script src="assets/currency.min.js"></script>
+  </head>
+
+  <body class="container">
+    <section id="app" class="section" v-cloak>
+      <div class="card">
+        <header class="card-header">
+          <h1 class="card-header-title">
+            <b-icon icon="paypal" pack="fab"></b-icon>
+            <span>Paypal Fee</span>
+          </h1>
+        </header>
+
+        <div class="card-content">
+          <div class="columns is-multiline">
+            <div class="column is-full">
+              <b-field label="Amount" label-position="on-border">
+                <b-input
+                  @keydown.native="input"
+                  v-model="amount"
+                  type="text"
+                  size="is-large"
+                  icon="dollar-sign"
+                  icon-pack="fas"
+                />
+              </b-field>
+            </div>
+            <div class="column">
+              <p class="heading is-capitalized">Amount</p>
+              <p class="title">{{ amount | money }}</p>
+            </div>
+            <div class="column">
+              <p class="heading is-capitalized">Net</p>
+              <p class="title has-text-success">{{ net | money }}</p>
+              <p class="subtitle has-text-grey-light">
+                {{ netPc | percentage }}
+              </p>
+            </div>
+            <div class="column">
+              <p class="heading is-capitalized">Fee</p>
+              <p class="title has-text-danger">{{ fee | money }}</p>
+              <p class="subtitle has-text-grey-light">
+                {{ feePc | percentage }}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <footer class="card-footer">
+          <div class="card-footer-item">
+            <p class="has-text-grey-light">&copy; Ambratolm 2021</p>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </body>
+
+  <script>
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          amount: 10
+        };
+      },
+      computed: {
+        fee() {
+          return this.amount == 0
+            ? 0
+            : currency(this.amount * 0.029 + 0.3).value || 0;
+        },
+        feePc() {
+          return this.amount == 0
+            ? 0
+            : currency(this.fee).divide(this.amount).value || 0;
+        },
+        net() {
+          return this.amount == 0
+            ? 0
+            : currency(this.amount).subtract(this.fee).value || 0;
+        },
+        netPc() {
+          return this.amount == 0
+            ? 0
+            : currency(this.net).divide(this.amount).value || 0;
+        }
+      },
+      methods: {
+        input(e) {
+          const keyIsPrintable = e.key.length === 1;
+          const keyIsNotNumeral = !new RegExp(/[\d\-\.]/).test(e.key);
+          const nextValue = e.target.value + e.key;
+          if (keyIsPrintable && (keyIsNotNumeral || isNaN(nextValue))) {
+            e.preventDefault();
+          }
+          console.log("► Key:", e.key);
+          console.log(
+            keyIsNotNumeral ? "is NOT numeral related" : "is numeral related"
+          );
+          console.log(
+            isNaN(nextValue) ? "result is NOT a number" : "result is a number"
+          );
+        }
+      },
+      filters: {
+        money(value) {
+          return currency(Number(value) || 0).format();
+        },
+        percentage(value) {
+          return `${currency((Number(value) || 0) * 100).value}%`;
+        }
+      }
+    });
+  </script>
+</html>
