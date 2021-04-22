@@ -29,9 +29,8 @@
             <div class="column is-full">
               <b-field label="Amount" label-position="on-border">
                 <b-input
-                  @keydown.native="input"
                   v-model="amount"
-                  type="text"
+                  type="number"
                   size="is-large"
                   icon="dollar-sign"
                   icon-pack="fas"
@@ -99,21 +98,7 @@
         }
       },
       methods: {
-        input(e) {
-          const keyIsPrintable = e.key.length === 1;
-          const keyIsNotNumeral = !new RegExp(/[\d\-\.]/).test(e.key);
-          const nextValue = e.target.value + e.key;
-          if (keyIsPrintable && (keyIsNotNumeral || isNaN(nextValue))) {
-            e.preventDefault();
-          }
-          console.log("► Key:", e.key);
-          console.log(
-            keyIsNotNumeral ? "is NOT numeral related" : "is numeral related"
-          );
-          console.log(
-            isNaN(nextValue) ? "result is NOT a number" : "result is a number"
-          );
-        }
+
       },
       filters: {
         money(value) {

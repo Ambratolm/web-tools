@@ -30,8 +30,8 @@
             <div class="column is-one-quarter" :dir="dir">
               <b-field label="Dirham" label-position="on-border">
                 <b-input
-                  @input.native="handleInput"
                   v-model="dirham"
+                  type="number"
                   ref="dirham"
                   icon="money-bill"
                   icon-pack="fas"
@@ -43,8 +43,8 @@
             <div class="column is-one-quarter" :dir="dir">
               <b-field label="Cent" label-position="on-border">
                 <b-input
-                  @input.native="handleInput"
                   v-model="cent"
+                  type="number"
                   icon="coins"
                   icon-pack="fas"
                   size="is-large"
@@ -55,8 +55,8 @@
             <div class="column is-one-quarter" :dir="dir">
               <b-field label="Rial" label-position="on-border">
                 <b-input
-                  @input.native="handleInput"
                   v-model="rial"
+                  type="number"
                   icon="coins"
                   icon-pack="fas"
                   size="is-large"
@@ -67,8 +67,8 @@
             <div class="column is-one-quarter" :dir="dir">
               <b-field label="Franc" label-position="on-border">
                 <b-input
-                  @input.native="handleInput"
                   v-model="franc"
+                  type="number"
                   icon="coins"
                   icon-pack="fas"
                   size="is-large"
@@ -230,11 +230,6 @@
         },
         format(currency, options) {
           return `${currency.dollars()}.${currency.cents()}`;
-        },
-        handleInput(e) {
-          if (new RegExp(/[^\d+(\.\d+)*]/).test(e.key)) {
-            e.preventDefault();
-          }
         },
         load() {
           this.dirham =
