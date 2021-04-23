@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Paypal Fee - Ambratolm Web Tools</title>
+    <title>Fiverr Fee - Ambratolm Web Tools</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="shortcut icon" href="favicon.ico" />
@@ -19,8 +19,8 @@
       <div class="card">
         <header class="card-header">
           <h1 class="card-header-title">
-            <b-icon icon="paypal" pack="fab"></b-icon>
-            <span>Paypal Fee</span>
+            <b-icon icon="file" pack="fas"></b-icon>
+            <span>Fiverr Fee</span>
           </h1>
         </header>
 
@@ -36,6 +36,11 @@
                   icon-pack="fas"
                 />
               </b-field>
+            </div>
+            <div class="column">
+              <p class="heading is-capitalized">Type</p>
+              <p class="title">Seller</p>
+              <p class="subtitle has-text-grey-light">Earning</p>
             </div>
             <div class="column">
               <p class="heading is-capitalized">Amount</p>
@@ -79,7 +84,7 @@
         fee() {
           return this.amount == 0
             ? 0
-            : currency(this.amount * 0.029 + 0.3).value || 0;
+            : currency(this.amount * 0.2).value || 0;
         },
         feePc() {
           return this.amount == 0
