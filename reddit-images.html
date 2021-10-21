@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Reddit Images - Ambratolm Web Tools</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="stylesheet" href="assets/buefy.min.css" />
+    <link rel="stylesheet" href="assets/bulmaswatch.min.css" />
+    <link rel="stylesheet" href="assets/custom.css" />
+    <script src="assets/fontawesome.all.min.js"></script>
+    <script src="assets/vue.min.js"></script>
+    <script src="assets/buefy.min.js"></script>
+    <script src="assets/reddit.js"></script>
+  </head>
+
+  <body class="container">
+    <section id="app" class="section" v-cloak>
+      <div @keydown.enter="search" class="card">
+        <header class="card-header">
+          <h1 class="card-header-title">
+            <b-icon icon="reddit" pack="fab"></b-icon>
+            <span>Reddit Images</span>
+          </h1>
+        </header>
+
+        <div class="card-content">
+          <form>
+            <b-field grouped>
+              <b-field label="Keyword" label-position="on-border" expanded>
+                <b-input
+                  v-model="keyword"
+                  ref="keyword"
+                  type="search"
+                  size="is-large"
+                  icon="tag"
+                  icon-pack="fas"
+                />
+              </b-field>
+
+              <b-field label="Author" label-position="on-border" expanded>
+                <b-input
+                  @paste.native.prevent="extractAuthor"
+                  v-model="author"
+                  type="search"
+                  size="is-large"
+                  icon="user"
+                  icon-pack="fas"
+                />
+              </b-field>
+
+              <b-field label="Subreddit" label-position="on-border" expanded>
+                <b-input
+                  @paste.native.prevent="extractSubreddit"
+                  v-model="subreddit"
+                  type="search"
+                  size="is-large"
+                  icon="reddit-alien"
+                  icon-pack="fab"
+                  expanded
+                />
+              </b-field>
+
+              <b-field expanded>
+                <b-button
+                  @click="search"
+                  title="Search and add results"
+                  type="is-primary"
+                  size="is-large"
+                  icon-left="search-plus"
+                  icon-pack="fas"
+
+                ></b-button>
+              </b-field>
+              <b-button
+                  @click="clear"
+                  title="Clear added results"
+                  type="is-primary"
+                  size="is-large"
+                  icon-left="broom"
+                  icon-pack="fas"
+                ></b-button>
+              </b-field>
+            </b-field>
+
+            <hr />
+
+            <b-pagination
+              type="is-primary"
+              v-model="current"
+              :total="results.length"
+              per-page="1"
+              range-before="10"
+              range-after="10"
+              order="is-centered"
+              size="is-large"
+              icon-pack="fas"
+              icon-prev="chevron-left"
+              icon-next="chevron-right"
+              aria-next-label="Next page"
+              aria-previous-label="Previous page"
+              aria-page-label="Page"
+              aria-current-label="Current page"
+            >
+            </b-pagination>
+
+            <div v-if="currentResult" class="columns is-multiline">
+              <div v-if="!currentResult.data.children.length"  class="column">
+                <b-message>
+                  <b-icon pack="fas" icon="search"></b-icon> No data.
+                </b-message>
+              </div>
+              <div
+                v-for="item in currentResult.data.children"
+                :key="item.data.name"
+                v-if="
+                  item.data.post_hint &&
+                  (item.data.post_hint === 'image' ||
+                    item.data.post_hint.endsWith('video'))
+                "
+                class="column is-4"
+              >
+                <div class="card">
+                  <div class="card-image">
+                    <a :href="item.data.url_overridden_by_dest" target="_blank">
+                      <figure class="image is-4by3">
+                        <img
+                          :src="item.data.thumbnail"
+                          src-fallback="favicon.ico"
+                          :alt="item.data.title"
+                          :title="item.data.title"
+                        />
+                      </figure>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <hr />
+
+            <b-field label="Generated Link" label-position="on-border">
+              <b-input
+                @focus="$event.target.select()"
+                :value="resultUrl"
+                type="text"
+                size="is-large"
+                icon="link"
+                icon-pack="fas"
+                custom-class="has-background-light"
+                readonly
+              />
+            </b-field>
+          </form>
+        </div>
+
+        <footer class="card-footer">
+          <div class="card-footer-item">
+            <p class="has-text-grey-light">&copy; Ambratolm 2021</p>
+          </div>
+        </footer>
+      </div>
+    </section>
+  </body>
+
+  <script>
+    const app = new Vue({
+      el: "#app",
+      mounted() {
+        this.$refs.keyword.focus();
+        this.loadFromLocalStorage();
+        this.search();
+      },
+      data() {
+        return {
+          keyword: "",
+          author: "",
+          subreddit: "",
+          results: [],
+          current: 1,
+        };
+      },
+      computed: {
+        currentResult() {
+          return this.results[this.current - 1];
+        },
+        resultUrl() {
+          return this.currentResult ? this.currentResult.$url : "";
+        },
+      },
+      methods: {
+        async search() {
+          const result = await reddit.search({
+            keyword: this.keyword,
+            author: this.author,
+            subreddit: this.subreddit,
+            after: this.currentResult ? this.currentResult.data.after : "",
+          });
+          this.results.push(result);
+          this.current++;
+        },
+        clear() {
+          this.results.splice(0, this.results.length);
+        },
+        loadFromLocalStorage() {
+          const { keyword, author, subreddit } = localStorage;
+          if (keyword) this.keyword = keyword;
+          if (author) this.author = author;
+          if (subreddit) this.subreddit = subreddit;
+        },
+        extractNameFromUrl(url) {
+          let urlParts = url.match(/[^\/]+/g);
+          if (urlParts.length > 0) return urlParts[urlParts.length - 1];
+          return url;
+        },
+        extractAuthor(e) {
+          this.author = this.extractNameFromUrl(
+            e.clipboardData.getData("text")
+          );
+        },
+        extractSubreddit(e) {
+          this.subreddit = this.extractNameFromUrl(
+            e.clipboardData.getData("text")
+          );
+        },
+      },
+      watch: {
+        keyword(keyword) {
+          localStorage.keyword = keyword;
+        },
+        author(author) {
+          localStorage.author = author;
+        },
+        subreddit(subreddit) {
+          localStorage.subreddit = subreddit;
+        },
+      },
+    });
+  </script>
+</html>

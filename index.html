@@ -18,16 +18,16 @@
       <div class="card">
         <header class="card-header">
           <h1 class="card-header-title">
-            <b-icon icon="reddit" pack="fab"></b-icon>
+            <b-icon icon="tools" pack="fas"></b-icon>
             <span>Ambratolm Web Tools</span>
           </h1>
         </header>
 
         <div class="card-content">
-          <div class="columns is-multiline is-centered">
+          <div class="columns is-multiline ">
             <div
               v-for="webTool in webTools"
-              class="column is-one-quarter has-text-centered"
+              class="column is-one-fifth has-text-centered"
             >
               <a
                 :label="webTool.title"
@@ -78,6 +78,13 @@
         return {
           webTools: [
             {
+              name: "reddit-images",
+              title: "Reddit Images",
+              url: "./reddit-images.html",
+              icon: "reddit-square",
+              iconPack: "fab"
+            },
+            {
               name: "reddit-search",
               title: "Reddit Search",
               url: "./reddit-search.html",
@@ -102,7 +109,7 @@
               name: "fiverr-fee",
               title: "Fiverr Fee",
               url: "./fiverr-fee.html",
-              icon: "file",
+              icon: "dollar-sign",
               iconPack: "fas"
             }
           ]
